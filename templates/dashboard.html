@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - StoreDrive{% endblock %}
+
+{% block content %}
+<style>
+    h2{
+        margin: 10px;
+    }
+</style>
+  
+<h1>Files</h1>
+<div class="row column1">
+    
+    <div class="col-md-6 col-lg-3"><a href="files">
+        <div class="full counter_section margin_bottom_30 yellow_bg">
+           <div class="couter_icon">
+              <div> 
+                 <i class="fa fa-file"></i>
+              </div>
+           </div>
+           <div class="counter_no">
+              <div>
+                 <p class="total_no" style="color: white;">Files</p>
+                 <p class="head_couter" style="color: white;">All Total : <b>{{file}}</b></p>
+              </div>
+           </div>
+        </div></a>
+     </div>
+
+    </div>
+
+
+
+<hr>
+<h1>Media</h1>
+<div class="row column1">
+    
+    <div class="col-md-6 col-lg-3"><a href="photos">
+        <div class="full counter_section margin_bottom_30 blue1_bg">
+           <div class="couter_icon">
+              <div> 
+                 <i class="fa fa-photo"></i>
+              </div>
+           </div>
+           <div class="counter_no">
+              <div>
+                 <p class="total_no" style="color: white;">Photos</p>
+                 <p class="head_couter" style="color: white;">Total : <b>{{photos}}</b></p>
+              </div>
+           </div>
+        </div></a>
+     </div>
+    <div class="col-md-6 col-lg-3"><a href="music">
+       <div class="full counter_section margin_bottom_30 orange_bg ">
+          <div class="couter_icon">
+             <div> 
+                <i class="fa fa-music white_color"></i>
+             </div>
+          </div>
+          <div class="counter_no">
+             <div>
+                <p class="total_no" style="color: white;">Music</p>
+                <p class="head_couter" style="color: white;">Total : <b>{{music}}</b></p>
+             </div>
+          </div>
+       </div>   </a>
+    </div>
+   
+    <div class="col-md-6 col-lg-3"><a href="movies">
+       <div class="full counter_section margin_bottom_30 green_bg">
+          <div class="couter_icon">
+             <div> 
+                <i class="fa fa-film"></i>
+             </div>
+          </div>
+          <div class="counter_no">
+             <div>
+                <p class="total_no" style="color: white;">Movies</p>
+                <p class="head_couter" style="color: white;">Total : <b>{{movies}}</b></p>
+             </div>
+          </div>
+       </div></a>
+    </div>
+    <div class="col-md-6 col-lg-3"><a href="videos">
+       <div class="full counter_section margin_bottom_30 red_bg">
+          <div class="couter_icon">
+             <div> 
+                <i class="fa fa-video-camera"></i>
+             </div>
+          </div>
+          <div class="counter_no">
+             <div>
+                <p class="total_no" style="color: white;">Videos</p>
+                <p class="head_couter" style="color: white;">Total : <b>{{videos}}</b></p>
+             </div>
+          </div>
+       </div>
+    </div></a>
+ </div>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %} Files - StoreDrive{% endblock %}
+{% block subtitle %} <h2>Files </h2> {% endblock %}
+{% block content %}
+<style>
+    h2{
+        margin: 10px;
+
+    }
+   
+</style>
+   <h2>My Files</h2><hr><br>
+
+   
+
+   <div class="row column1">
+    
+    <div class="col-md-6 col-lg-3"><a href="photos">
+        <div class="full counter_section margin_bottom_30 blue1_bg">
+           <div class="couter_icon">
+              <div> 
+                 <i class="fa fa-photo"></i>
+              </div>
+           </div>
+           <div class="counter_no">
+              <div>
+                 <p class="total_no" style="color: white;">Photos</p>
+                 <p class="head_couter" style="color: white;">{{photos}}</p>
+              </div>
+           </div>
+        </div></a>
+     </div>
+    <div class="col-md-6 col-lg-3"><a href="music">
+       <div class="full counter_section margin_bottom_30 orange_bg ">
+          <div class="couter_icon">
+             <div> 
+                <i class="fa fa-music white_color"></i>
+             </div>
+          </div>
+          <div class="counter_no">
+             <div>
+                <p class="total_no" style="color: white;">Music</p>
+                <p class="head_couter" style="color: white;">{{music}}</p>
+             </div>
+          </div>
+       </div>   </a>
+    </div>
+   
+    <div class="col-md-6 col-lg-3"><a href="movies">
+       <div class="full counter_section margin_bottom_30 green_bg">
+          <div class="couter_icon">
+             <div> 
+                <i class="fa fa-film"></i>
+             </div>
+          </div>
+          <div class="counter_no">
+             <div>
+                <p class="total_no" style="color: white;">Movies</p>
+                <p class="head_couter" style="color: white;">{{movies}}</p>
+             </div>
+          </div>
+       </div></a>
+    </div>
+    <div class="col-md-6 col-lg-3"><a href="videos">
+       <div class="full counter_section margin_bottom_30 red_bg">
+          <div class="couter_icon">
+             <div> 
+                <i class="fa fa-video-camera"></i>
+             </div>
+          </div>
+          <div class="counter_no">
+             <div>
+                <p class="total_no" style="color: white;">Videos</p>
+                <p class="head_couter" style="color: white;">{{videos}}</p>
+             </div>
+          </div>
+       </div>
+    </div></a>
+ </div>
+
+
+</div>
+   
+{% endblock %}

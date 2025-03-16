@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- <script src="https://kit.fontawesome.com/64dfed8802.js" crossorigin="anonymous"></script> -->
+      <!-- basic -->
+      <meta charset="utf-8">
+      <style>
+         .style{font-family: sans-serif;}
+      
+         .btn0{
+            background-color: beige;
+            color: black;
+            transition: .4s ease-out;
+         }
+         .btn0:hover{
+            background-color: blue;
+            color: white;
+            padding: 5px;
+         }
+         .btn0:active{
+            background-color: red;
+            color: wheat;
+         }
+      </style>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>{% block title %}{% endblock %}</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- site icon -->
+      <!-- <link rel="icon" href="/static/data/image.png" type="image/png" /> -->
+      {% if request.user.image %}
+      <link rel="icon" href="/media/{{request.user.image }}" type="image/png" />
+      {%endif%}
+      
+      <!-- bootstrap css -->
+      <link rel="stylesheet" href="/static/data/css/bootstrap.min.css" />
+      <!-- site css -->
+      <link rel="stylesheet" href="/static/data/style.css" />
+      <!-- responsive css -->
+      <link rel="stylesheet" href="/static/data/css/responsive.css" />
+      <!-- color css -->
+      <link rel="stylesheet" href="/static/data/css/colors.css" />
+      <!-- select bootstrap -->
+      <link rel="stylesheet" href="/static/data/css/bootstrap-select.css" />
+      <!-- scrollbar css -->
+      <link rel="stylesheet" href="/static/data/css/perfect-scrollbar.css" />
+      <!-- custom css -->
+      <link rel="stylesheet" href="/static/data/css/custom.css" />
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond./static/data/images/js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+   </head>
+   
+   
+   <body class="dashboard dashboard_1" >
+      
+      <div class="full_container">
+         <div class="inner_container">
+            <!-- Sidebar  -->
+            <nav id="sidebar">
+               <div class="sidebar_blog_1">
+                  <div class="sidebar-header">
+                     <div class="logo_section">
+                        {%if request.user.image %}
+                        <a href="/drive"><img class="logo_icon img-responsive" src="{{request.user.image.url}}" alt="{{request.user}}" /></a>
+                        {% else %}
+                        <a href="/drive"><img class="logo_icon img-responsive" src="https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png" alt="{{request.user}}" /></a>
+                       {%endif%}
+                     </div>
+                  </div>
+                  <div class="sidebar_user_info">
+                     <div class="icon_setting"></div>
+                     <div class="user_profle_side">
+                        <style>
+                           /* Styles for the page */
+                           .user_img {
+                               cursor: pointer;
+                           }
+                       
+                           /* overlay1 styles */
+                           .overlay1 {
+                               display: none;
+                               position: fixed;
+                               top: 0;
+                               left: 0;
+                               width: 100%;
+                               height: 100%;
+                               background: rgba(0, 0, 0, 0.7);
+                               justify-content: center;
+                               align-items: center;
+                               z-index: 1000;
+                           }
+                       
+                           .overlay1.active {
+                               display: flex;
+                           }
+                       
+                           .overlay1-content {
+                               background: white;
+                               padding: 20px;
+                               border-radius: 10px;
+                               position: relative;
+                               text-align: center;
+                           }
+                       
+                           .close-overlay1 {
+                               position: absolute;
+                               top: 10px;
+                               right: 10px;
+                               cursor: pointer;
+                               font-size: 20px;
+                               font-weight: bold;
+                           }
+                       
+                           .file-input-container {
+                               display: flex;
+                               flex-direction: column;
+                               align-items: center;
+                               border: 2px dashed #ccc;
+                               padding: 20px;
+                               border-radius: 10px;
+                               width: 300px;
+                           }
+                       
+                           .file-input-container input[type="file"] {
+                               display: none;
+                           }
+                       
+                           .file-input-container img {
+                               width: 300px;
+                               height: auto;
+                               display: none;
+                               margin-top: 20px;
+                           }
+                       </style>
+                        <div class="user_img" id="userImage">
+                           {% if request.user.image %}
+                               <img class="img-responsive" src="{{ request.user.image.url }}" alt="User Image" />
+                           {% else %}
+                               <img class="img-responsive" src="https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png" alt="Default Image" />
+                           {% endif %}
+                       </div>
+                       <div class="overlay1" id="overlay1">
+                        <div class="overlay1-content">
+                            <span class="close-overlay1" id="closeoverlay1">&times;</span>
+                            <form id="imageUploadForm" enctype="multipart/form-data" method="post" action="{% url 'profile_update' 0%}">
+                              {%csrf_token%}
+                                <div class="file-input-container" id="fileInputContainer">
+                                    <label for="fileInput" style="color: black;">Drag and drop an image or click to select one</label>
+                                    <input type="file" id="fileInput" name="image" accept="image/*">
+                                    <img id="imagePreview" alt="Image Preview">
+                                </div>
+                                <button type="submit"class="btn btn-primary" >Upload</button>
+                            </form>
+                        </div>
+                       </div>
+                       
+                       <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const userImage = document.getElementById('userImage');
+                            const overlay1 = document.getElementById('overlay1');
+                            const closeoverlay1 = document.getElementById('closeoverlay1');
+                            const fileInput = document.getElementById('fileInput');
+                            const fileInputContainer = document.getElementById('fileInputContainer');
+                            const imagePreview = document.getElementById('imagePreview');
+                       
+                            userImage.addEventListener('click', () => {
+                                overlay1.classList.add('active');
+                            });
+                       
+                            closeoverlay1.addEventListener('click', () => {
+                                overlay1.classList.remove('active');
+                            });
+                       
+                            overlay1.addEventListener('click', (e) => {
+                                if (e.target === overlay1) {
+                                    overlay1.classList.remove('active');
+                                }
+                            });
+                       
+                            fileInput.addEventListener('change', (e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function(event) {
+                                        imagePreview.src = event.target.result;
+                                        imagePreview.style.display = 'block';
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                       
+                            fileInputContainer.addEventListener('dragover', (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fileInputContainer.classList.add('dragging');
+                            });
+                       
+                            fileInputContainer.addEventListener('dragleave', (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fileInputContainer.classList.remove('dragging');
+                            });
+                       
+                            fileInputContainer.addEventListener('drop', (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fileInputContainer.classList.remove('dragging');
+                                const files = e.dataTransfer.files;
+                                if (files.length > 0) {
+                                    fileInput.files = files;
+                                    const file = files[0];
+                                    const reader = new FileReader();
+                                    reader.onload = function(event) {
+                                        imagePreview.src = event.target.result;
+                                        imagePreview.style.display = 'block';
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        });
+                       </script>
+                        
+                        <div class="user_info">
+                           
+                           <h6>{{request.user}}</h6>
+                           <p><span class="online_animation"></span> Online</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="sidebar_blog_2">
+                  <h4>General</h4>
+                  <ul class="list-unstyled components">
+                     <li  class="active"><a href="/drive "><i class="fa fa-dashboard " style="color: rgb(213, 104, 3);"></i> <span>Dashboard</span></a></li>
+                    
+                     <li class="active">
+                           <a href="/drive/files" ><i class="fa fa-file-o yellow_color"></i> <span>Files</span></a>
+                  
+                     </li>
+                     <li><a href="/drive/photos"><i class="fa fa-photo blue1_color"></i> <span>Photos</span></a></li>
+                     
+                     <li><a href="/drive/music"><i class="fa fa-music orange_color"></i> <span>Music</span></a></li>
+                   
+
+                     <li><a href="/drive/movies"><i class="fa fa-film green_color"></i> <span>Movies</span></a></li>
+                     <li>
+                        <a href="/drive/videos"><i class="fa fa-video-camera red_color"></i> <span>Videos</span></a>
+                       
+                     </li>
+                     
+               </div>
+            </nav>
+            <!-- end sidebar -->
+            <!-- right content -->
+            
+            <div id="content" >
+               <!-- topbar -->
+               <div class="topbar">
+                  <nav class="navbar navbar-expand-lg navbar-light">
+                     <div class="full">
+                       
+                         <div>
+                           <a type="button" id="sidebarCollapse" class="sidebar_toggle" data-bs-toggle="collapse" href="#sidebar" role="button" aria-expanded="false" aria-controls="collapseExample">
+                              <i class="fa fa-bars"></i>
+                            </a>
+                        <!-- <button type="button" id="sidebarCollapse" class="sidebar_toggle" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                           <i class="fa fa-bars"></i>
+                        </button> -->
+                        <div class="collapse" >
+                           <div class="card card-body">
+                              
+                           </div>
+                         </div>
+                        </div>
+                        <div class="logo_section">
+                           
+                           
+                           
+                           <a href="/drive/"><img class="img-responsive" width="200px" src="/static/data/logo.png" alt="StoreDrive Logo" /></a>
+                           <style>
+                              /* Styles for the dropdown */
+                              .dropdown {
+                                position: relative;
+                                display: inline-block;
+                              }
+                            
+                              /* Style the image */
+                           
+                            
+                              /* Style the username span */
+                              span.username {
+                                cursor: pointer;
+                              }
+                            
+                              /* Style the dropdown menu */
+                              .dropdown-content {
+                                display: none;
+                                position: absolute;
+                                background-color: #f9f9f9;
+                                width: 160px; /* Set a fixed width */
+                                box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+                                z-index: 1;
+                                overflow: hidden;
+                                animation: dropdownAnimation 0.5s ease-out;
+                                right: 0; /* Align the dropdown content to the right */
+                              }
+                            
+                              @keyframes dropdownAnimation {
+                                from {
+                                  max-height: 0;
+                                }
+                                to {
+                                  max-height: 200px; /* Adjust height as needed */
+                                }
+                              }
+                            
+                              /* Style the dropdown links */
+                              .dropdown-content a {
+                                color: black;
+                                padding: 12px 16px;
+                                text-decoration: none;
+                                display: block;
+                              }
+                            
+                              /* Change color of dropdown links on hover */
+                              .dropdown-content a:hover {
+                                background-color: #f1f1f1;
+                              }
+                            
+                              /* Show the dropdown menu when the image or username is clicked */
+                              .show {
+                                display: block;
+                              }
+                            </style>
+                        
+                        
+                        </div>
+                        <div class="right_topbar">
+                           <div class="icon_info">
+                              <!-- <ul>
+                                 <li><a href="#"><i class="fa fa-bell-o"></i><span class="badge"></span></a></li>
+                                 <li><a href="#"><i class="fa fa-question-circle"></i></a></li>
+                                 <li><a href="#"><i class="fa fa-envelope-o"></i><span class="badge">3</span></a></li>
+                              </ul> -->
+                              <ul>
+                              <li><a href="/drive/profile" ><i class="fa fa-user"></i></a></li>
+                              <li><a href="/drive/settings" ><i class="fa fa-gears"></i></a></li>
+                              <li><a href="/logout" ><i class="fa fa-power-off"></i></a></li></ul>
+                              <ul class="user_profile_dd">
+                                 <li>
+                                    
+                                    <div class="dropdown">
+                                       {%if request.user.image %}
+                                       <img src="{{ request.user.image.url }}" style="width: 50px; border-radius: 50%;" alt="User Image" onclick="toggleDropdown()">
+                                       {% else %}
+                                       <img src="https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png" style="width: 50px; border-radius: 50%;" alt="User Image" onclick="toggleDropdown()">
+                                       {%endif%}
+                                       <span class="username" onclick="toggleDropdown()">{{ request.user }}</span>
+                                       <div id="dropdownMenu" class="dropdown-content">
+                                         <a href="/drive/profile/">Profile</a>
+                                         <a href="/drive/settings/">Settings</a>
+                                         <a href="/logout/">logout</a>
+                                       </div>
+                                     </div>
+                                    
+                                     <script>
+                                       function toggleDropdown() {
+                                         var dropdownMenu = document.getElementById("dropdownMenu");
+                                         dropdownMenu.classList.toggle("show");
+                                       }
+                                       
+                                       // Close the dropdown menu if the user clicks outside of it
+                                       window.onclick = function(event) {
+                                         if (!event.target.matches('.dropdown img') && !event.target.matches('.dropdown span.username')) {
+                                           var dropdowns = document.getElementsByClassName("dropdown-content");
+                                           for (var i = 0; i < dropdowns.length; i++) {
+                                             var openDropdown = dropdowns[i];
+                                             if (openDropdown.classList.contains('show')) {
+                                               openDropdown.classList.remove('show');
+                                             }
+                                           }
+                                         }
+                                       }
+                                       </script>
+                                 </li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </nav>
+               </div>
+               <!-- end topbar -->
+               <!-- dashboard inner -->
+               <!-- <style>
+                  .content,.midde_cont,{
+                     background-color: rgb(32, 28, 28);
+                     color: black;
+                  }
+               </style> -->
+               <div class="midde_cont">
+                  <div class="container-fluid">
+                     <div class="row column_title">
+                        <div class="col-md-12">
+                           <div class="page_title">
+                              {% block subtitle %}
+                              {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+                              {%endblock%}
+                           </div>
+                        </div>
+                     </div>
+                  
+                     {% block content %}
+                     {% endblock %}
+                   
+                 
+                  </div>
+                  <!-- footer -->
+                  <div class="container-fluid">
+                     <div class="footer">
+                        <p>Copyright © <span id="year"> </span>  Designed by StoreDrive. All rights reserved.<br><br>
+                        </p>
+                        <script>
+                           const yearElement = document.getElementById('year');
+                           const currentYear = new Date().getFullYear();
+                           yearElement.textContent = currentYear;
+                        </script>
+                        
+                     </div>
+                  </div>
+               </div>
+               <!-- end dashboard inner -->
+            </div>
+         </div>
+      </div>
+      <!-- jQuery -->
+      <script src="/static/data/images/js/jquery.min.js"></script>
+      <script src="/static/data/images/js/popper.min.js"></script>
+      <script src="/static/data/images/js/bootstrap.min.js"></script>
+      <!-- wow animation -->
+      <script src="/static/data/images/js/animate.js"></script>
+      <!-- select country -->
+      <script src="/static/data/images/js/bootstrap-select.js"></script>
+      <!-- owl carousel -->
+      <script src="/static/data/images/js/owl.carousel.js"></script> 
+      <!-- chart js -->
+      <script src="/static/data/images/js/Chart.min.js"></script>
+      <script src="/static/data/images/js/Chart.bundle.min.js"></script>
+      <script src="/static/data/images/js/utils.js"></script>
+      <script src="/static/data/images/js/analyser.js"></script>
+      <!-- nice scrollbar -->
+      <script src="/static/data/images/js/perfect-scrollbar.min.js"></script>
+      <script>
+         var ps = new PerfectScrollbar('#sidebar');
+      </script>
+      <!-- base.html -->
+
+<!-- <script>
+   const sessionTimeoutWarning = 9 * 60 * 1000; // 179 minutes
+   const sessionTimeout = 10 * 60 * 1000; // 180 minutes
+
+   setTimeout(() => {
+       alert('You will be logged out in 1 minute due to inactivity.');
+   }, sessionTimeoutWarning);
+
+   setTimeout(() => {
+       window.location.href = "{% url 'logout' %}";
+   }, sessionTimeout);
+</script> -->
+
+      <!-- custom js --><script>
+    document.getElementById("openForm").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("form-container").style.display = "block";
+    });
+
+    document.getElementById("overlay").addEventListener("click", function() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("form-container").style.display = "none";
+    });
+
+    document.getElementById("myForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Perform your form submission handling here
+        // For example, you can access form data using:
+        // var formData = new FormData(document.getElementById("myForm"));
+        // Then you can use AJAX to send this data to the server
+        // Here, I'm just logging the form data to the console
+        var formData = new FormData(document.getElementById("myForm"));
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
+        // After form submission, hide the form and overlay
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("form-container").style.display = "none";
+    });
+</script>   
+      <script src="/static/data/images/js/custom.js"></script>
+      <script src="/static/data/images/js/chart_custom_style1.js"></script>   
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+   </body>
+</html>

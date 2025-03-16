@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings - StoreDrive{% endblock %}
+<head>
+<link rel="stylesheet" href="path/to/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+</head>
+{% block subtitle %} <h2>My Profile </h2> {% endblock %}
+{% block content %}
+
+<style>
+    h2{
+        margin: 10px;
+    }
+</style>
+   <!-- <h2>Profile</h2> -->
+   <div class="row column1">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+       <div class="white_shd full margin_bottom_30">
+          <div class="full graph_head">
+             <div class="heading1 margin_0">
+                <h2>SETTINGS</h2>
+             </div>
+             <div style="padding-left: 50%" class="heading1 margin_0">
+               <a href="/drive/profile/"> <h2>Back to  Profile <svg style="width: 20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg>
+                </h2></a> </div>
+          </div>
+          <div class="full price_table padding_infor_info">
+             <div class="row" >
+                <!-- user profile section --> 
+                <!-- profile image -->
+                <form action="/drive/settings/image/1" enctype="multipart/form-data" method="post">
+                  {%csrf_token%}
+                <div class="col-lg-12">
+                   <div class="full dis_flex center_text">
+                     {%if request.user.image %}
+                      <div class="profile_img"><img width="180" class="rounded-circle" src="{{request.user.image.url}}" alt="#" />
+                       <br><br> <a href="{% url 'delete_record' 5 request.user.id %}">Remove Image</a>
+                        {% else %}
+                        <div class="profile_img"><img width="180" class="rounded-circle" src="https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png" alt="#" />
+                           {%endif%}
+                      <br><br>
+                        <input type="file" name="image" accept=".jpeg,.jpg,.png">
+                        <button type="submit"  class="btn btn-primary">Upload Image </button>
+
+
+                     </form>
+
+                     
+
+                        <br><br><ul class="list-unstyled" style="margin-right: 20%;">
+                           <li><i class="fa fa-envelope-o"></i> Email ID : <a href="mailto:{{request.user.email}}">{{request.user.email}}</a></li>
+                           <br><li><i class="fa fa-globe"></i> Server ID : {{request.user.server_id}}</li>
+                        </ul><br><br>
+                        <a href="{% url 'delete_record' 0 request.user.id %}" id="delete-account-link">Want to Close your Account?</a>
+
+                        <script>
+                            document.getElementById('delete-account-link').addEventListener('click', function(event) {
+                                var confirmation = confirm("You are about to delete your account which cannot be recovered. Are you sure you want to do it?");
+                                if (!confirmation) {
+                                    event.preventDefault(); // Prevent the default action (navigating to the URL)
+                                }
+                            });
+                        </script>
+
+                     
+                     </div>
+                      <div class="profile_contant">
+                         <div class="contact_inner">
+                           {%if messages%}
+                           {%for x in messages%}
+                           
+                           {{x}}
+                           
+                           {%endfor%}{%endif%}
+                            {%if request.user.first_name %}
+                            <h3>{{request.user.first_name}} {{request.user.last_name}}</h3>
+                            {% else %}
+                            <h3>{{request.user}}</h3>
+                            {% endif %}
+                            <form action="{% url 'settings'%}" method="post">
+                              {%csrf_token%}
+
+                              <p><i class="fa-solid fa-input-text"></i><strong>Username: </strong> {{request.user.username}}  <a href="{% url 'change_password_logged' %}" style="margin-left: 5%;">  Change Password?</a></p>
+                            <p><strong>First Name: 
+ 
+                            </strong><input type="text" name="first_name" value="{{request.user.first_name}}" id="">  </p>
+                            <p><strong>Last Name: </strong><input type="text" name="last_name" value="{{request.user.last_name}}" id=""> </p>
+                            
+                            
+                            <p><strong>Date of Birth: </strong> <input type="date" name="dob" value="{{request.user.dob}}" id=""> </p>
+                            
+                            <p><strong>Email: </strong> <input type="text" name="email" value="{{request.user.email}}" id=""> </p>
+                            
+                            <p><strong>About: </strong> <textarea name="bio" id="">{{request.user.bio}}</textarea></p>
+                            <p><strong>Date of Joined: </strong> {{request.user.doj}}</p>
+                           
+                            <button type="submit"  class="btn btn-primary">Update Profile</button>
+                            
+                         </div>
+                        </form>
+                        
+
+
+                      </div>
+                   </div>
+                   
+{% endblock %}

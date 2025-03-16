@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% block title %}Movies - StoreDrive{% endblock %}
+{% block subtitle %}
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+       <a href="/drive/movies"><button class="btn0"><h4 class="style" style="margin: 0;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; "><i style="color: black;" class="fa fa-chevron-circle-left"></i>  My Movies</h4></button> </a>
+       <button class="btn0"  id="openForm"><i style="color: black;" class="fa fa-film"></i>  Add Movie</button> 
+    </div>
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="/static/media/movies/style.css">
+
+        <style>
+            .header-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .search-container {
+                text-align: right;
+            }
+            .search-container input {
+                width: 400px;
+            }
+
+            
+    #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+    }
+
+    #form-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+    }
+
+    #form-container h2 {
+        margin-top: 0;
+    }
+
+    #form-container input[type="text"],
+    #form-container input[type="file"],
+    #form-container input[type="date"] {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    #form-container button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        cursor: pointer;}
+        </style>
+</div>
+
+
+<!-- form for upload -->
+
+
+
+<div id="overlay"></div>
+
+<div id="form-container">
+    <h2>Add Movie</h2>
+    <form id="uploadForm" action="/drive/files/movies/" method="post" enctype="multipart/form-data">
+      {%csrf_token%}
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="movie">Movie:</label>
+        <input type="file" id="movie" name="file" accept=".mp4,.mkv,.avi,.mov" required><br>
+
+      
+
+        <button type="submit"  id="uploadButton" >Upload Movie</button>
+        <div id="progress" style="display: none;">
+         <div id="overallProgress">
+             <div id="overallProgressBar"></div>
+             <div id="overallProgressText"></div>
+         
+         <div id="fileProgress" style="display: none;">
+             <div id="progressBar"></div>
+             <div id="progressText"></div>
+         </div>
+     </div>
+ </div>
+
+    </form>
+</div>
+
+
+
+
+
+  <!-- <div class="form-container" id="hiddenForm" style="margin-bottom: 100px;">
+    <h2>Upload Movie</h2>
+  <form id="uploadForm" action="/drive/files/movies/" method="post" enctype="multipart/form-data" >
+        {%csrf_token%}
+       
+        <div class="form-group"  >
+            <label for="moviesFile">Select Movies:</label>
+            <input type="text" name="title" placeholder="Name of The Movie" id="">
+            <input type="file" id="moviesFile" name="file"  accept=".mp4,.3gp,.mkv,.avi,.webm" required>
+        </div>
+        <button type="submit"  id="uploadButton">Upload</button>
+
+        <div id="progress" style="display: none;">
+            <div id="overallProgress">
+                <div id="overallProgressBar"></div>
+                <div id="overallProgressText"></div>
+            
+            <div id="fileProgress" style="display: none;">
+                <div id="progressBar"></div>
+                <div id="progressText"></div>
+            </div>
+        </div>
+    </div>
+   </form>
+      </div> -->
+
+      <!-- <div class="midde_cont">
+        <div class="container-fluid">
+           <div class="row column_title">
+              <div class="col-md-12">
+                 <div class="page_title">
+                    <h2>Dashboard</h2>
+                 </div>
+              </div>
+           </div> -->
+           
+           <div class="row column1">
+            
+            <div class="col-md-12">
+               <div class="white_shd full margin_bottom_30">
+                  <div class="full graph_head">
+                     <div class="heading1 margin_0">
+                        <h2>Edit    </h2>
+                     </div>
+                     <div class="search-container">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <input type="text" id="searchInput" onkeyup="searchSongs()" placeholder="Search for Movies...">
+                    </div>
+                  </div>
+                  
+                  <div class="full price_table padding_infor_info">
+                    
+                     <div class="row">
+                         <!-- column contact --> 
+                         <div class="row" id="songContainer">
+                        
+                  {% if movies %}
+                  {% for x in movies %}
+
+                        <!-- column contact --> 
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 profile_details margin_bottom_30">
+                           <div class="contact_blog">
+                              <!-- <h4 class="brief">Digital Strategist</h4> -->
+                              
+                              <div class="contact_inner">
+                                 <div class="left">
+                                    <h3>{{ x.title }}</h3><video style="width: 300px;" src="/media/{{ x.file }}"    poster=""></video> 
+                                    <p><strong>About: </strong>{{ x.title }}</p>
+                                  
+                                 </div>
+
+
+                                 <!-- <div class="right">
+                                    <div class="profile_contacts">
+                                       <img class="img-responsive" src="images/layout_img/msg2.png" alt="#" />
+                                    </div>
+                                 </div> -->
+                                 <div class="bottom_list">
+                                   
+                                    <div class="right_button"><a href="{% url 'delete_record' 3 x.pk %}">
+                                       <button type="button" class="btn btn-danger btn-xs"> <i class="fa fa-remove">
+                                       </i> Delete 
+                                       </button></a>
+                                       <button type="button" class="btn btn-primary btn-xs">
+                                       <i class="fa fa-edit"> </i> Edit
+                                       </button>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        {% endfor %}
+                        {%else%}
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 profile_details margin_bottom_30">
+                           <div class="contact_blog">
+                              <!-- <h4 class="brief">Digital Strategist</h4> -->
+                              
+                              <div class="contact_inner">
+                                 <div class="left">
+                                   <button type="button" style="background-color: rgb(80, 80, 238); padding: 10px;" class="btn  btn-xs" >
+                                   <img width="100px" src="https://cdn.pixabay.com/photo/2017/04/20/07/07/add-2244771_1280.png" alt="">
+                               </button>
+                                    <p><strong>About: </strong>{{ x.title }}</p>
+                                  
+                                 </div>
+
+
+                                 <!-- <div class="right">
+                                    <div class="profile_contacts">
+                                       <img class="img-responsive" src="images/layout_img/msg2.png" alt="#" />
+                                    </div>
+                                 </div> -->
+                              
+                              </div>
+                           </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- end column contact blog -->
+                        <!-- column contact --> 
+                        <!-- end column contact blog -->
+                        <!-- column contact --> 
+                
+                        <!-- end column contact blog -->
+                     </div>
+                     
+                  </div>
+               </div>
+            </div>
+            <!-- end row -->
+         </div>
+     
+    <script src="/static/media/movies/script.js"></script>
+
+{% endblock %}

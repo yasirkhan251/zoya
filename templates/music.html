@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% block title %}Music - StoreDrive{% endblock %}
+{% block subtitle %}
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0;">Music</h2>
+      <a href="/drive/files/music/">  
+        <i class="fa fa-file yellow_color"> <i class="fa fa-music"></i> </i>  Music
+        </a>
+    </div>
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="/static/media/music/style.css">
+  
+  <div class="form-container" id="hiddenForm" style="margin-bottom: 100px;">
+    <h2>Upload Music</h2>
+  <form id="uploadForm" action="/drive/music/" method="post" enctype="multipart/form-data" >
+        {%csrf_token%}
+       
+        <div class="form-group" id="showFormBtn" >
+            <label for="musicFile">Select Music:</label>
+            <input type="file" id="musicFile" name="file" multiple accept=".mp3,.m4a" required>
+        </div>
+        <button type="submit"  id="uploadButton">Upload</button>
+        <div id="progress" style="display: none;">
+            <div id="overallProgress">
+                <div id="overallProgressBar"></div>
+                <div id="overallProgressText"></div>
+            
+            <div id="fileProgress" style="display: none;">
+                <div id="progressBar"></div>
+                <div id="progressText"></div>
+            </div>
+        </div>
+    </div>
+   </form>
+      </div>
+   <div class="row column4 graph">
+        <!-- Gallery section -->
+        <div class="col-md-12">
+           <div class="white_shd full margin_bottom_30">
+              <div class="full graph_head color_container">
+                 <div class="heading1 margin_0">
+                    <h2>My Music   </h2>
+                    
+                 </div>
+                 <style>
+                    .header-container {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 20px;
+                    }
+                    .search-container {
+                        text-align: right;
+                    }
+                    .search-container input {
+                        width: 400px;
+                    }
+                  
+                    
+                </style>
+                <div class="search-container">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    <input type="text" id="searchInput" onkeyup="searchSongs()" placeholder="Search for Songs...">
+                </div>
+              </div>
+               <div class="full gallery_section_inner padding_infor_info  color_container_inner" >
+                <div class="row" id="songContainer">
+                    {% if music %}
+                        {% for x in music %}
+                            <div class="col-sm-4 col-md-3 margin_bottom_30 song-item">
+                                <div class="thumbnail-container">
+                                    <div class="image-container" style="position: relative;">
+                                        {% if x.image %}
+                                            <img width="100%" src="{{ x.image.url }}" alt="{{ x.title }}">
+                                        {% else %}
+                                            <img width="100%" src="/static/media/music/music_logo.jpg" alt="{{ x.title }}">
+                                        {% endif %}
+                                        
+                                        <!-- Transparent button with play/pause icon -->
+                                        <button class="play-pause" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: transparent; border: none;">
+                                            <img src="/static/media/music/play.png" alt="Play" width="50px">
+                                        </button>
+                
+                                        <div class="audio-controls" style="position: absolute; bottom: 10px; left: 10px; right: 10px; display: none; justify-content: space-between; align-items: center;">
+                                            <input type="range" class="seeker" value="0">
+                                            <button class="repeat-toggle" onclick="toggleRepeat(event, this)">
+                                                <img src="/static/media/music/repeat.png" alt="Repeat" width="30px">
+                                            </button>
+                                        </div>
+                                        
+                                        <audio class="audio-player" src="{{ x.file.url }}" data-index="{{ forloop.counter }}"></audio>
+                                    </div>
+                                </div>
+                                <div class="heading_section">
+                                    <h4>{{ x.title }}</h4>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const audioPlayers = document.querySelectorAll('.audio-player');
+                        const imageContainers = document.querySelectorAll('.image-container');
+                    
+                        audioPlayers.forEach((player, index) => {
+                            player.addEventListener('play', () => {
+                                audioPlayers.forEach((p, i) => {
+                                    if (i !== index) {
+                                        p.pause();
+                                        resetPlayPauseButton(imageContainers[i]);
+                                    }
+                                });
+                            });
+                    
+                            player.addEventListener('timeupdate', () => {
+                                const seeker = imageContainers[index].querySelector('.seeker');
+                                if (player.duration) {
+                                    seeker.value = (player.currentTime / player.duration) * 100;
+                                }
+                            });
+                    
+                            player.addEventListener('ended', () => {
+                                resetPlayPauseButton(imageContainers[index]);
+                                const nextIndex = (index + 1) % audioPlayers.length;
+                                audioPlayers[nextIndex].play();
+                            });
+                        });
+                    
+                        document.querySelectorAll('.seeker').forEach(seeker => {
+                            seeker.addEventListener('input', function(event) {
+                                const audioPlayer = this.closest('.image-container').querySelector('.audio-player');
+                                if (audioPlayer.duration) {
+                                    audioPlayer.currentTime = (this.value / 100) * audioPlayer.duration;
+                                }
+                            });
+                    
+                            seeker.addEventListener('mousedown', function() {
+                                const audioPlayer = this.closest('.image-container').querySelector('.audio-player');
+                                audioPlayer.pause();
+                            });
+                    
+                            seeker.addEventListener('mouseup', function() {
+                                const audioPlayer = this.closest('.image-container').querySelector('.audio-player');
+                                audioPlayer.play();
+                            });
+                    
+                            // Handle touch events for mobile devices
+                            seeker.addEventListener('touchstart', function() {
+                                const audioPlayer = this.closest('.image-container').querySelector('.audio-player');
+                                audioPlayer.pause();
+                            });
+                    
+                            seeker.addEventListener('touchend', function() {
+                                const audioPlayer = this.closest('.image-container').querySelector('.audio-player');
+                                audioPlayer.play();
+                            });
+                        });
+                    
+                        imageContainers.forEach(container => {
+                            container.addEventListener('click', function(event) {
+                                const target = event.target;
+                                if (target.classList.contains('repeat-toggle')) {
+                                    event.stopPropagation();
+                                    return;
+                                }
+                            });
+                        });
+                    
+                        document.querySelectorAll('.play-pause').forEach(button => {
+                            button.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                                const audioPlayer = this.closest('.image-container').querySelector('.audio-player');
+                                const playPauseButton = this.querySelector('img');
+                                const audioControls = this.closest('.image-container').querySelector('.audio-controls');
+                                if (audioPlayer.paused) {
+                                    audioPlayer.play();
+                                    playPauseButton.src = '/static/media/music/pause.png';
+                                    playPauseButton.alt = 'Pause';
+                                    audioControls.style.display = 'flex';
+                                } else {
+                                    audioPlayer.pause();
+                                    playPauseButton.src = '/static/media/music/play.png';
+                                    playPauseButton.alt = 'Play';
+                                    audioControls.style.display = 'none';
+                                }
+                            });
+                        });
+                    
+                        document.querySelectorAll('.repeat-toggle').forEach(button => {
+                            button.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                                const audioPlayer = this.closest('.image-container').querySelector('.audio-player');
+                                if (audioPlayer.loop) {
+                                    audioPlayer.loop = false;
+                                    this.querySelector('img').style.opacity = 0.5;
+                                } else {
+                                    audioPlayer.loop = true;
+                                    this.querySelector('img').style.opacity = 1;
+                                }
+                            });
+                        });
+                    
+                        function resetPlayPauseButton(container) {
+                            const playPauseButton = container.querySelector('.play-pause img');
+                            playPauseButton.src = '/static/media/music/play.png';
+                            playPauseButton.alt = 'Play';
+                            container.querySelector('.audio-controls').style.display = 'none';
+                        }
+                    });
+                    </script>
+                    
+
+
+
+                
+<style>
+    .play-pause {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.play-pause img {
+    width: 150px;
+}
+
+.audio-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.image-container {
+    cursor: pointer;
+}
+
+.seeker {
+    width: 100px;
+}
+
+
+
+.thumbnail-container {
+    position: relative;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.audio-player {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: none; /* Hide initially */
+}
+
+.image-container:hover .audio-player {
+    display: block; /* Show audio player on hover */
+}
+</style>                
+    </div>
+    </div>
+    </div>
+    </div>
+    <script src="/static/media/music/script.js"></script>
+
+{% endblock %}
